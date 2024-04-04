@@ -1,12 +1,16 @@
 package envejecimientoSimulacionP2;
 
+import java.io.BufferedReader;
+
 //package envejecimientoSimulacionP2;
 
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -20,9 +24,9 @@ public class Paginacion {
             writer.write("NC=" + nc + "\n");
             writer.write("NF_NC_Filtro=" + 3 + "\n");
             int nr = (19*(nc-2)*(nf-2))+2*nc + 2*(nf-2);
-            writer.write("NR: " + nr + "\n");
+            writer.write("NR=" + nr + "\n");
             int np = (int)Math.ceil((double)((2 * (nf * nc) + 9) * 4) / tamanoPagina);
-            writer.write("NP: " + np + "\n");
+            writer.write("NP=" + np + "\n");
 
             
             Map<String, Pagina> paginasA = new HashMap<>();
@@ -147,7 +151,7 @@ public class Paginacion {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("Seleccione una opci n:");
@@ -177,19 +181,71 @@ public class Paginacion {
       
             System.out.println("Ingrese el nombre del archivo de referencias con el.txt (en nuestro caso es referencias.txt)");
             String nombreArchivo = scanner.nextLine();
+           
+            List<Integer> paginas = leerArchivoModo2Juan("referencias.txt"); //TODO cambiar nombre
+            Parte2 modo2 = new Parte2(numeroDeMarcos, paginas);
+            //new Parte2intento(numeroDeMarcos, nombreArchivo);
 
 
             scanner.close();
             
-            TablaDePaginas tablaDePaginas = new TablaDePaginas();
+            //TablaDePaginas tablaDePaginas = new TablaDePaginas();
             
             
-            AdminTablaPaginas gestorDeMemoria = new AdminTablaPaginas(tablaDePaginas, numeroDeMarcos, nombreArchivo); 
-            gestorDeMemoria.start();
+            //AdminTablaPaginas gestorDeMemoria = new AdminTablaPaginas(tablaDePaginas, numeroDeMarcos, nombreArchivo); 
+            //gestorDeMemoria.start();
 
         }
         else {
             System.out.println("Opci n no v lida");
         }
     }
+
+    public static List<Integer> leerArchivoModo2(String filename) throws IOException {
+        List<Integer> paginas = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        String linea;
+        while ((linea = reader.readLine()) != null) {
+            if (!linea.startsWith("TP") && !linea.startsWith("NF") && !linea.startsWith("NC") && !linea.startsWith("NF_NC_Filtro") && !linea.startsWith("NR")&& !linea.startsWith("NP")) {
+                String[] partes = linea.split(",");
+                int numPagina = Integer.parseInt(partes[1]);
+                paginas.add(numPagina);
+            }
+        }
+        reader.close();
+        return paginas;
+    }
+
+    public static List<Integer> leerArchivoModo2Juan(String filename) throws IOException {
+        List<Integer> paginas = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        String linea;
+
+        int TP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NF = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NC = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NF_NC_Filtro = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int  NR = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+
+        System.out.println(TP);
+        System.out.println(NF);
+        System.out.println(NC);
+        System.out.println(NF_NC_Filtro);
+        System.out.println(NR);
+        System.out.println(NP);
+ 
+
+
+        while ((linea = reader.readLine()) != null) {
+            if (!linea.startsWith("TP") && !linea.startsWith("NF") && !linea.startsWith("NC") && !linea.startsWith("NF_NC_Filtro") && !linea.startsWith("NR")&& !linea.startsWith("NP")) {
+                String[] partes = linea.split(",");
+                int numPagina = Integer.parseInt(partes[1]);
+                paginas.add(numPagina);
+            }
+        }
+        reader.close();
+        return paginas;
+    }
+    
 }
