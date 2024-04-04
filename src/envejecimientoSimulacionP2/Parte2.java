@@ -1,5 +1,8 @@
 package envejecimientoSimulacionP2;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,12 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Parte2 {
 
     private int MP;
-    private List<Integer> paginas;
-
-    public Parte2(Integer MP, List<Integer> paginas) {
-        this.MP = MP;
-        this.paginas = paginas;
-    }
+    private static String nombreArchivo;
+    private List<Integer> paginas;  
 
     private static final Object lock = new Object();
 
@@ -27,8 +26,22 @@ public class Parte2 {
     public static List<Integer> paginasEnUso = Collections.synchronizedList(new ArrayList<Integer>());
     public static List<Integer> paginasMemoriaReal = Collections.synchronizedList(new ArrayList<Integer>());
 
+    
+    public static List<Pagina> paginasMemoriaVirtualJ = Collections.synchronizedList(new ArrayList<Pagina>());
+    public static List<Pagina> paginasEnUsoJ = Collections.synchronizedList(new ArrayList<Pagina>());
+    public static List<Pagina> paginasMemoriaRealJ = Collections.synchronizedList(new ArrayList<Pagina>());
+
     //Tabla necesaria para ejecutar el algortimo de envejecimiento
     private static ConcurrentHashMap<Integer, Integer> envejecimiento = new ConcurrentHashMap<Integer, Integer>();
+
+
+
+    public Parte2(Integer MP, String nombreArchivo) throws IOException {
+
+        this.MP = MP;
+        this.nombreArchivo = nombreArchivo;
+    }
+
 
     public Integer ejecutarModo2()
     {
@@ -40,6 +53,45 @@ public class Parte2 {
         return fallosPagina;
     }
 
+    
+    public static synchronized void leerArchivo() throws IOException {
+
+        List<Pagina> listaPaginas = paginasMemoriaVirtualJ;
+
+        BufferedReader reader = new BufferedReader(new FileReader(nombreArchivo));
+        String linea;
+
+        int TP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NF = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NC = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NF_NC_Filtro = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int  NR = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        int NP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+
+        System.out.println(TP);
+        System.out.println(NF);
+        System.out.println(NC);
+        System.out.println(NF_NC_Filtro);
+        System.out.println(NR);
+        System.out.println(NP);
+
+        for(int i=0; i<NP; i++){
+            listaPaginas.add(new Pagina(i, TP));
+        }
+ 
+        while ((linea = reader.readLine()) != null) {
+            String[] partes = linea.split(",");
+
+            int numPagina = Integer.parseInt(partes[1]);
+            int desplazamiento = Integer.parseInt(partes[2]);
+
+            Pagina pag = listaPaginas.get(numPagina);
+            pag.putRegistro(desplazamiento/3);
+            
+        }
+        reader.close();
+
+    }
 
     public void cargaInicialPaginas()
     {
@@ -174,4 +226,5 @@ public class Parte2 {
         // Se borran las páginas en uso del conjunto de páginas en uso
         paginasEnUso.clear();
     }
+    
 }

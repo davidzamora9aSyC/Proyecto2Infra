@@ -182,8 +182,10 @@ public class Paginacion {
             System.out.println("Ingrese el nombre del archivo de referencias con el.txt (en nuestro caso es referencias.txt)");
             String nombreArchivo = scanner.nextLine();
            
-            List<Integer> paginas = leerArchivoModo2("referencias.txt"); //TODO cambiar nombre
-            Parte2 modo2 = new Parte2(numeroDeMarcos, paginas);
+            //List<Integer> paginas = leerArchivoModo2("referencias.txt"); //TODO cambiar nombre
+            Parte2 modo2 = new Parte2(numeroDeMarcos, nombreArchivo);
+            Parte2.leerArchivo();
+            
             //new Parte2intento(numeroDeMarcos, nombreArchivo);
 
 
@@ -216,35 +218,5 @@ public class Paginacion {
         return paginas;
     }
 
-    public static List<Integer> leerArchivoModo2Juan(String filename) throws IOException {
-        List<Integer> paginas = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
-        String linea;
-
-        int TP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NF = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NC = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NF_NC_Filtro = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int  NR = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-
-        System.out.println(TP);
-        System.out.println(NF);
-        System.out.println(NC);
-        System.out.println(NF_NC_Filtro);
-        System.out.println(NR);
-        System.out.println(NP);
- 
-
-
-        while ((linea = reader.readLine()) != null) {
-            String[] partes = linea.split(",");
-            int numPagina = Integer.parseInt(partes[1]);
-            paginas.add(numPagina);
-            
-        }
-        reader.close();
-        return paginas;
-    }
     
 }
