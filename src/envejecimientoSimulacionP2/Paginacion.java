@@ -182,7 +182,7 @@ public class Paginacion {
             System.out.println("Ingrese el nombre del archivo de referencias con el.txt (en nuestro caso es referencias.txt)");
             String nombreArchivo = scanner.nextLine();
            
-            List<Integer> paginas = leerArchivoModo2Juan("referencias.txt"); //TODO cambiar nombre
+            List<Integer> paginas = leerArchivoModo2("referencias.txt"); //TODO cambiar nombre
             Parte2 modo2 = new Parte2(numeroDeMarcos, paginas);
             //new Parte2intento(numeroDeMarcos, nombreArchivo);
 
@@ -238,11 +238,10 @@ public class Paginacion {
 
 
         while ((linea = reader.readLine()) != null) {
-            if (!linea.startsWith("TP") && !linea.startsWith("NF") && !linea.startsWith("NC") && !linea.startsWith("NF_NC_Filtro") && !linea.startsWith("NR")&& !linea.startsWith("NP")) {
-                String[] partes = linea.split(",");
-                int numPagina = Integer.parseInt(partes[1]);
-                paginas.add(numPagina);
-            }
+            String[] partes = linea.split(",");
+            int numPagina = Integer.parseInt(partes[1]);
+            paginas.add(numPagina);
+            
         }
         reader.close();
         return paginas;
