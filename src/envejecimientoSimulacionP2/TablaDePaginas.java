@@ -34,16 +34,21 @@ public class TablaDePaginas {
     
     private class EntradaTabla {
         int idMarcoPagina;
+        Pagina paginaVirtual;
         byte bitEnvejecimiento;
 
         EntradaTabla(int idMarcoPagina) {
             this.idMarcoPagina = idMarcoPagina;
             this.bitEnvejecimiento = (byte) 0b00000000;  
         }
-    
+
+        EntradaTabla() {
+            this.idMarcoPagina = -1;
+            this.bitEnvejecimiento = (byte) 0b00000000;  
+        }
 
 
-        void actualizarBitEnvejecimiento(byte valor) {
+        public void actualizarBitEnvejecimiento(byte valor) {
 
             this.bitEnvejecimiento = valor;  
         }
@@ -106,7 +111,6 @@ public class TablaDePaginas {
         }
     }
     
-    
 
     public void eliminarEntradaPorPagina(int idPagina) {
         lock.lock();
@@ -118,7 +122,6 @@ public class TablaDePaginas {
     }
     
     
-
     public Integer obtenerMarcoPagina(int idPagina) {
         lock.lock();
         try {

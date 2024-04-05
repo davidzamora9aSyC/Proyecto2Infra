@@ -184,7 +184,7 @@ public class Paginacion {
            
             //List<Integer> paginas = leerArchivoModo2("referencias.txt"); //TODO cambiar nombre
             Parte2 modo2 = new Parte2(numeroDeMarcos, nombreArchivo);
-            Parte2.leerArchivo();
+            modo2.ejecutarModo2();
             
             //new Parte2intento(numeroDeMarcos, nombreArchivo);
 

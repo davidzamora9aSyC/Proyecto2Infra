@@ -5,16 +5,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Random;
 
 public class Parte2 {
 
-    private int MP;
     private static String nombreArchivo;
     private List<Integer> paginas;  
 
+    //private static TablaDePaginas tablaDePaginas;
     private static final Object lock = new Object();
 
     //Los fallos de página serán retornados
@@ -27,71 +29,176 @@ public class Parte2 {
     public static List<Integer> paginasMemoriaReal = Collections.synchronizedList(new ArrayList<Integer>());
 
     
-    public static List<Pagina> paginasMemoriaVirtualJ = Collections.synchronizedList(new ArrayList<Pagina>());
-    public static List<Pagina> paginasEnUsoJ = Collections.synchronizedList(new ArrayList<Pagina>());
-    public static List<Pagina> paginasMemoriaRealJ = Collections.synchronizedList(new ArrayList<Pagina>());
+    public static Pagina[] paginasMemoriaVirtualJ;
+    //public static int[] tablaDePaginas;
+    public static int[] tablaAuxiliar;
+    public static boolean[] marcosDePagina;
 
     //Tabla necesaria para ejecutar el algortimo de envejecimiento
     private static ConcurrentHashMap<Integer, Integer> envejecimiento = new ConcurrentHashMap<Integer, Integer>();
 
+    private static int MP;
+    private static int TP;
+    private static int NF;
+    private static int NC;
+    private static int NF_NC_Filtro;
+    private static int  NR;
+    private static int NP;
+    private static String[] referencias;
+    private static int[] tablaDePaginas;
 
 
     public Parte2(Integer MP, String nombreArchivo) throws IOException {
 
         this.MP = MP;
-        this.nombreArchivo = nombreArchivo;
+        Parte2.nombreArchivo = nombreArchivo;
     }
 
 
-    public Integer ejecutarModo2()
-    {
-        new AlgoritmoEnvejecimiento().start();
-        new Actualizacion().start();
-        cargaInicialPaginas();
-        Actualizacion.detenerActualizador();
-        AlgoritmoEnvejecimiento.detenerEnvejecimiento();
-        return fallosPagina;
+    public void ejecutarModo2() throws IOException
+    {   
+        leerArchivo();
+        cargarListas();
+
+        String[] partes;
+        int numPagina;
+        int desplazamiento;
+
+        int hits = 0;
+        int misses = 0;
+        //Actualizador actualizador = new Actualizador(this.conteo);
+        //actualizador.start();
+
+        for (int i = 0; i < Parte2.NR; i++) {
+
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            
+            partes = Parte2.referencias[i].split(",");
+
+            numPagina = Integer.parseInt(partes[1]);
+            desplazamiento = Integer.parseInt(partes[2]);
+
+            if ((i+1)%4 == 0){
+                System.out.println(referencias[i]);
+                //conteo.pedirActualizar();
+            }
+            
+            
+            if (Parte2.tablaDePaginas[i] == -1) {
+                misses++;
+
+                int marcoVacio = 0;
+                for(int j=0; j< Parte2.MP; j++){
+                    marcoVacio = j;
+                    if (marcosDePagina[j]){
+                        break;
+                    }
+                }
+
+                if (marcoVacio < Parte2.MP) {                           //Se verifica si hay algun marco aun vacio
+                    Parte2.marcosDePagina[marcoVacio] = true;           //Se deja el marco de pagina como ocupado
+                    Parte2.tablaDePaginas[numPagina] = marcoVacio;      //Se actualiza la tabla de paginas, por lo que la pagina se agrega en el marco que estaba vacio
+
+                    //this.conteo.referenciarPagina(numPagina);
+
+                } else {
+
+                    int idEliminar = getIndexNRU();
+                    //int idx  = this.conteo.obtenerPaginaAEliminar(this.tablaPaginas);
+
+                    Parte2.tablaDePaginas[numPagina] = Parte2.tablaDePaginas[idEliminar];
+                    Parte2.tablaDePaginas[idEliminar] = -1;
+                    //this.conteo.referenciarPagina(numPagina);
+                }
+                
+            } else {
+                hits++;
+                //this.conteo.referenciarPagina(numPagina);
+            }
+            
+        }
+        //conteo.pedirActualizar();
+        //actualizador.detener();
+        //imprimirResultados(hits, misses);
     }
 
     
+    public void cargarListas() {
+        Parte2.tablaAuxiliar = new int[Parte2.NP];
+        Parte2.marcosDePagina = new boolean[Parte2.MP];
+        Parte2.paginasMemoriaVirtualJ = new Pagina[Parte2.NP];
+        Parte2.tablaDePaginas = new int[Parte2.NP];
+
+        for(int i=0; i<NP; i++){
+            Parte2.paginasMemoriaVirtualJ[i] = new Pagina(i, TP/4);
+        }
+
+        for (int i = 0; i < MP; i++) {
+            Parte2.marcosDePagina[i] = false;
+        }
+    
+        for (int i = 0; i < NP; i++) {
+            Parte2.tablaDePaginas[i] = -1;
+            Parte2.tablaAuxiliar[i] = i;
+        }
+        
+    }
+    
     public static synchronized void leerArchivo() throws IOException {
 
-        List<Pagina> listaPaginas = paginasMemoriaVirtualJ;
+        Pagina[] listaPaginas = paginasMemoriaVirtualJ;
 
         BufferedReader reader = new BufferedReader(new FileReader(nombreArchivo));
         String linea;
 
-        int TP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NF = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NC = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NF_NC_Filtro = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int  NR = (int) Integer.parseInt(reader.readLine().split("=")[1]);
-        int NP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        Parte2.TP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        Parte2.NF = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        Parte2.NC = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        Parte2.NF_NC_Filtro = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        Parte2.NR = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        Parte2.NP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        
+        Parte2.referencias = new String[NR];
+        int i = 0;
 
-        System.out.println(TP);
-        System.out.println(NF);
-        System.out.println(NC);
-        System.out.println(NF_NC_Filtro);
-        System.out.println(NR);
-        System.out.println(NP);
-
-        for(int i=0; i<NP; i++){
-            listaPaginas.add(new Pagina(i, TP));
-        }
- 
         while ((linea = reader.readLine()) != null) {
-            String[] partes = linea.split(",");
-
-            int numPagina = Integer.parseInt(partes[1]);
-            int desplazamiento = Integer.parseInt(partes[2]);
-
-            Pagina pag = listaPaginas.get(numPagina);
-            pag.putRegistro(desplazamiento/3);
-            
+            Parte2.referencias[i] = linea;
+            i++;
         }
         reader.close();
 
     }
+
+
+    public static int getIndexNRU(){
+        LinkedList<Integer> clase0 = new LinkedList<Integer>();
+        LinkedList<Integer> clase1 = new LinkedList<Integer>();
+        Random random = new Random();
+        int randomIndex;
+
+        for(Pagina pag: paginasMemoriaVirtualJ){
+            if (pag.getR() == 1) {
+                clase0.add(pag.getId());
+            } else {
+                clase1.add(pag.getId());
+            }
+        }
+
+        if (clase0.size() >= 1) {
+            randomIndex = random.nextInt(clase0.size());
+        } else if (clase1.size() >= 1) {
+            randomIndex = random.nextInt(clase1.size());
+        } else {
+            randomIndex = -1;
+        }
+        return randomIndex;    
+    }
+
+
 
     public void cargaInicialPaginas()
     {
