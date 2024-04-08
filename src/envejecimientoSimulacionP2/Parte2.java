@@ -118,6 +118,7 @@ public class Parte2 {
 
                     Parte2.tablaDePaginas[numPagina] = Parte2.tablaDePaginas[idEliminar];
                     Parte2.tablaDePaginas[idEliminar] = -1;
+                    paginasMemoriaVirtualJ[idEliminar].setR(0);
 
                     Parte2.estructuraApoyo.referenciarPagina(numPagina);
 
