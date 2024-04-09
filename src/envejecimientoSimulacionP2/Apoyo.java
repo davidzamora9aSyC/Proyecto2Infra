@@ -15,7 +15,7 @@ public class Apoyo {
 
         for (int i = 0; i < this.NP; i++) {
 
-            if(guardados.contains(paginasMemoriaVirtualJ[i].getR())){
+            if(guardados.contains(paginasMemoriaVirtualJ[i].getId())){
                 paginasMemoriaVirtualJ[i].setR(1);
             }           
         }
@@ -40,7 +40,7 @@ public class Apoyo {
         int randomIndex;
 
         for(Pagina pag: paginasMemoriaVirtualJ){
-            if (pag.getR() == 1) {
+            if (pag.getR() == 0) {
                 clase0.add(pag.getId());
             } else {
                 clase1.add(pag.getId());

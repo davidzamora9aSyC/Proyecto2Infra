@@ -8,13 +8,13 @@ public class ActualizadorDeBits extends Thread {
     @Override
     public void run() {
         while(enPaginacion) {
-            /**
+            
             try {
-                Thread.sleep(1);
+                Thread.sleep(4);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            */
+            
             this.apoyo.pedirActualizar();
         }
     }

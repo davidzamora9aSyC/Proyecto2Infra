@@ -182,21 +182,13 @@ public class Paginacion {
             System.out.println("Ingrese el nombre del archivo de referencias con el.txt (en nuestro caso es referencias.txt)");
             String nombreArchivo = scanner.nextLine();
            
-            //List<Integer> paginas = leerArchivoModo2("referencias.txt"); //TODO cambiar nombre
-            Parte2 modo2 = new Parte2(numeroDeMarcos, nombreArchivo);
+            Parte2 modo2 = new Parte2(numeroDeMarcos, nombreArchivo);  //"referencias.txt"
             modo2.ejecutarModo2();
             
-            //new Parte2intento(numeroDeMarcos, nombreArchivo);
-
 
             scanner.close();
             
-            //TablaDePaginas tablaDePaginas = new TablaDePaginas();
-            
-            
-            //AdminTablaPaginas gestorDeMemoria = new AdminTablaPaginas(tablaDePaginas, numeroDeMarcos, nombreArchivo); 
-            //gestorDeMemoria.start();
-
+        
         }
         else {
             System.out.println("Opci n no v lida");

@@ -83,20 +83,6 @@ public class Parte2 {
             numPagina = Integer.parseInt(partes[1]);
             desplazamiento = Integer.parseInt(partes[2]);
 
-            if ((i+1)%4 == 0){      // El bit R se tiene que ejecutar cada 4 milisegundos, que es cada cuatro ejecuciones de estre Thread principal
-               
-                estructuraApoyo.pedirActualizar();
-                
-            }
-            /**
-            System.out.println(tablaDePaginas.toString());
-            System.out.print("[");
-            for(int k=0; k<tablaDePaginas.length; k++){
-                System.out.print( tablaDePaginas[k] + ", ");
-            }
-            System.out.println("]");
-            
-            */
 
             if (Parte2.tablaDePaginas[numPagina] == -1) {
                 Parte2.misses++;
@@ -132,7 +118,6 @@ public class Parte2 {
             }
             
         }
-        Parte2.estructuraApoyo.pedirActualizar();
         Parte2.actualizadorDeBits.detener();
 
         // TODO Se puede agregar en una funcion
@@ -142,8 +127,8 @@ public class Parte2 {
 
         System.out.println("Hits: " + hits + "  =  " + String.format("%.2f", porcentajeHits) + "%");
         System.out.println("Fallas: " + misses + "  =  " + String.format("%.2f", porcentajeMisses) + "%");
-        System.out.println("Tiempo de ejecución: (hits * 30) ns + (misses * 10000000) ns = " + hits*30 + " + " + misses*10000000 + " = " + (hits*30 + misses*10000000) + " ns");
-        System.out.println("Tiempo si todo fuera fallos: " + Parte2.NR*10000000 + " ns");
+        System.out.println("Tiempo de ejecución: (hits * 30) ns + (misses * 10000000) ns = " + hits*30 + " + " + misses*10000000L + " = " + (hits*30 + misses*10000000L) + " ns");
+        System.out.println("Tiempo si todo fuera fallos: " + Parte2.NR*10000000L + " ns");
         System.out.println("Tiempo si todo fuera hits: " + Parte2.NR*30 + " ns");
 
     }
