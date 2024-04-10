@@ -1,25 +1,19 @@
-package envejecimientoSimulacionP2;
+package paginacion;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import java.util.LinkedList;
-
-import java.util.Random;
 
 public class Parte2 {
 
     private static String nombreArchivo;
-
-    
+   
     public static Pagina[] paginasMemoriaVirtualJ;
     public static int[] tablaAuxiliar;
     public static boolean[] marcosDePagina;
 
-
     private static int MP;
-    private static int TP;
     private static int  NR;
     private static int NP;
     private static String[] referencias;
@@ -123,7 +117,7 @@ public class Parte2 {
         Parte2.actualizadorDeBits = new ActualizadorDeBits(estructuraApoyo);
 
         for(int i=0; i<NP; i++){
-            Parte2.paginasMemoriaVirtualJ[i] = new Pagina(i, TP/4);
+            Parte2.paginasMemoriaVirtualJ[i] = new Pagina(i);
         }
 
         for (int i = 0; i < MP; i++) {
@@ -143,7 +137,7 @@ public class Parte2 {
         BufferedReader reader = new BufferedReader(new FileReader(nombreArchivo));
         String linea;
         int sobrante;
-        Parte2.TP = (int) Integer.parseInt(reader.readLine().split("=")[1]);
+        sobrante = (int) Integer.parseInt(reader.readLine().split("=")[1]);
         sobrante = (int) Integer.parseInt(reader.readLine().split("=")[1]);
         sobrante = (int) Integer.parseInt(reader.readLine().split("=")[1]);
         sobrante = (int) Integer.parseInt(reader.readLine().split("=")[1]);
@@ -162,31 +156,5 @@ public class Parte2 {
         cargarListas();
 
     }
-
-
-    public static int getIndexNRU(){
-        LinkedList<Integer> clase0 = new LinkedList<Integer>();
-        LinkedList<Integer> clase1 = new LinkedList<Integer>();
-        Random random = new Random();
-        int randomIndex;
-
-        for(Pagina pag: paginasMemoriaVirtualJ){
-            if (pag.getR() == 1) {
-                clase0.add(pag.getId());
-            } else {
-                clase1.add(pag.getId());
-            }
-        }
-
-        if (clase0.size() >= 1) {
-            randomIndex = random.nextInt(clase0.size());
-        } else if (clase1.size() >= 1) {
-            randomIndex = random.nextInt(clase1.size());
-        } else {
-            randomIndex = -1;
-        }
-        return randomIndex;    
-    }
-
     
 }

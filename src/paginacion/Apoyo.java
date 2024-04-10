@@ -1,4 +1,4 @@
-package envejecimientoSimulacionP2;
+package paginacion;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -52,13 +52,6 @@ public class Apoyo {
             randomIndex = -1;
         }
         return randomIndex;    
-    }
-
-    
-    public synchronized void referenciarPagina(int pagina) {
-
-        if (!guardados.contains(pagina))
-            guardados.add(pagina);
     }
 
 

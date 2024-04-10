@@ -1,4 +1,4 @@
-package envejecimientoSimulacionP2;
+package paginacion;
 
 public class ActualizadorDeBits extends Thread {
     

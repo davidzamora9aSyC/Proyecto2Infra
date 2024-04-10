@@ -1,16 +1,10 @@
-package envejecimientoSimulacionP2;
-
-import java.io.BufferedReader;
-
-//package envejecimientoSimulacionP2;
+package paginacion;
 
 import java.io.BufferedWriter;
-import java.io.FileReader;
+
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -202,24 +196,8 @@ public class Paginacion {
         
         }
         else {
-            System.out.println("Opcion no v lida");
+            System.out.println("Opcion no valida");
         }
     }
-
-    public static List<Integer> leerArchivoModo2(String filename) throws IOException {
-        List<Integer> paginas = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
-        String linea;
-        while ((linea = reader.readLine()) != null) {
-            if (!linea.startsWith("TP") && !linea.startsWith("NF") && !linea.startsWith("NC") && !linea.startsWith("NF_NC_Filtro") && !linea.startsWith("NR")&& !linea.startsWith("NP")) {
-                String[] partes = linea.split(",");
-                int numPagina = Integer.parseInt(partes[1]);
-                paginas.add(numPagina);
-            }
-        }
-        reader.close();
-        return paginas;
-    }
-
     
 }
