@@ -2,11 +2,12 @@ package envejecimientoSimulacionP2;
 
 public class ActualizadorDeBits extends Thread {
     
-    public boolean enPaginacion;
+    public boolean enPaginacion = true;
     public Apoyo apoyo;
 
     @Override
     public void run() {
+
         while(enPaginacion) {
             
             try {
@@ -15,7 +16,7 @@ public class ActualizadorDeBits extends Thread {
                 e.printStackTrace();
             }
             
-            this.apoyo.pedirActualizar();
+            this.apoyo.actualizacionDeBitR();
         }
     }
 

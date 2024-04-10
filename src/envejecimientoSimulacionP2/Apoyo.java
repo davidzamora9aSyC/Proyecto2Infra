@@ -5,39 +5,36 @@ import java.util.Random;
 
 public class Apoyo {
     
-    private int NP;
     private LinkedList<Integer>  guardados;
-    private String estado;
     public static Pagina[] paginasMemoriaVirtualJ;
+    public static boolean[] marcosDePagina;
 
 
     public synchronized void actualizacionDeBitR(){
 
-        for (int i = 0; i < this.NP; i++) {
+        if (Apoyo.marcosDePagina.length >= 1){
+            
 
-            if(guardados.contains(paginasMemoriaVirtualJ[i].getId())){
-                paginasMemoriaVirtualJ[i].setR(1);
-            }           
+            for (int i = 0; i < Apoyo.marcosDePagina.length; i++) {
+
+                if(marcosDePagina[i]){
+                    paginasMemoriaVirtualJ[i].setR(0);
+                }           
+            }
         }
-
-        guardados.clear();
-
-        estado = "Esperando";
-        notify();
     }
 
-
-    
+    /**
     public synchronized void pedirActualizar() {
         notify();
     }
-    
+    */
 
-    public static int getIndexNRU(){
+    public static synchronized int getIndexNRU(){
         LinkedList<Integer> clase0 = new LinkedList<Integer>();
         LinkedList<Integer> clase1 = new LinkedList<Integer>();
         Random random = new Random();
-        int randomIndex;
+        int randomIndex;        
 
         for(Pagina pag: paginasMemoriaVirtualJ){
             if (pag.getR() == 0) {
@@ -59,23 +56,24 @@ public class Apoyo {
 
     
     public synchronized void referenciarPagina(int pagina) {
-        if (estado.equals("Actualizando")) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        guardados.add(pagina);
+
+        if (!guardados.contains(pagina))
+            guardados.add(pagina);
     }
 
 
-    public Apoyo(Pagina[] paginasMemoriaVirtualJ, int NP) {
+    public static void setearUnBit(int id, int valor) {
 
-        this.NP = NP;
+        paginasMemoriaVirtualJ[id].setR(valor);
+
+    }
+
+
+    public Apoyo(Pagina[] paginasMemoriaVirtualJ, int NP, boolean[] marcosDePagina) {
+
         Apoyo.paginasMemoriaVirtualJ = paginasMemoriaVirtualJ;
+        Apoyo.marcosDePagina = marcosDePagina;
         this.guardados = new LinkedList<Integer>();
-        this.estado = "Esperando";
 
         guardados.clear();
     }
